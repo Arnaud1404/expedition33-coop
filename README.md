@@ -8,6 +8,10 @@ For those who come after, with your friends!
 
 - During battles each player will control their own character, including having to parry and chose actions.
 - During exploration, player 1 will have control by default, but any player can take over by pressing START (useful for leveling and choosing equipment for your own characters)
+- Battle spots come from the game's own party table, so mods with a larger party (such as Expedition Infinity's party of five) map characters to the right player. Party slots 4 and 5 have their own assignment settings; they default to player 1.
+- In battle, a label at the top shows the player in control on a player turn, or the players attacked on an enemy turn (`Player 2`, `Player 1, 3`, `All players`). It fades out after 5 seconds and shows again on the next turn.
+- Enemy attack names end with the players attacked, for example `Slash (P1)` or `Slash (All)`.
+- The team menu badge shows the party slot over the assigned player (`C1` over `P2`).
 
 ### Playing with friends remotely
 
@@ -26,6 +30,7 @@ The mod is still in the very early stages, if you experience any issues, please 
 
 - Press & hold actions in menus (Learn Skill, Upgrade Attributes, Level Weapon) can currently only be controlled by player 1
   - Can also be slightly mitigated by moving the mouse after the held action failed
+- Prompts answered with A, such as leaving a battle or photo mode, only respond to player 1: CommonUI drops accept events from other local players
 
 ## For Developers
 
