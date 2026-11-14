@@ -72,7 +72,8 @@ var usmap = new Usmap("Mappings.usmap");
         "UI/Widgets/MainMenu/WBP_MM_MainMenu",
         "UI/Widgets/InGame_Menu/Team/WBP_TeamCard_CharacterStatus",
         "UI/Widgets/InGame_Menu/Team/CharacterSelector/WBP_CharacterCardButton",
-        "UI/Widgets/InGame_Menu/Settings/OptionsList/WBP_Settings_GeneralOptionsList"
+        "UI/Widgets/InGame_Menu/Settings/OptionsList/WBP_Settings_GeneralOptionsList",
+        "UI/Widgets/HUD_Battle/SubWidget/BattlePopUp_Widgets/WBP_HUD_BattleActionTooltip"
     ];
 
     foreach (var file in filesToHook) {
