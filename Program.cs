@@ -125,9 +125,11 @@ var usmap = new Usmap("Mappings.usmap");
         Console.WriteLine("Patched BP_jRPG_Character_Battle_Base");
     }
 
+    // the _9_P suffix mounts this pack after plain _P packs, so its hooked blueprints win over other
+    // mods' copies of the same assets
     var retocProc = Process.Start("retoc.exe",
     [
-        "to-zen", @".\Sandfall\Windows", "expedition33_coop_P.utoc",
+        "to-zen", @".\Sandfall\Windows", "expedition33_coop_9_P.utoc",
         "--version", "UE5_4",
         "--filter", "Content/Coop",
         ..filesToHook.SelectMany<string, string>(f => ["--filter", f])

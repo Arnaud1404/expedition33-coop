@@ -21,6 +21,9 @@ Steam only offers "Remote Play-Together" for games that have built-in coop suppo
 
 Download the latest release and unzip it in the game folder under `..\Expedition 33\Sandfall\Content\Paks\~mods`. 
 If the `~mods` folder does not exist, create it.
+When updating from a release that shipped `expedition33_coop_P`, delete those files: the pack is now `expedition33_coop_9_P`, which mounts after other mods' `_P` packs.
+
+The pack ships its own copy of the battle character blueprint with an ally left-to-right table for 5 battle spots, so it can sit next to party-of-five mods such as Expedition Infinity that change that blueprint only for this table.
 
 ## Issues
 
