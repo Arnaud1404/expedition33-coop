@@ -89,6 +89,42 @@ var usmap = new Usmap("Mappings.usmap");
             throw new Exception($"ue-hook-blueprints.exe failed with {proc.ExitCode}");
     }
 
+    // party-size mods put allies on battle spots 3 and 4, past the end of the game's ally table [1,0,2];
+    // this pack ships the battle blueprint, so it carries the longer table itself. A 3-member party
+    // never reads the added entries.
+    {
+        const string battleBase = @".\Sandfall\Windows\Sandfall\Content\jRPGTemplate\Blueprints\Basics\BP_jRPG_Character_Battle_Base.uasset";
+        var asset = new UAsset(battleBase, EngineVersion.VER_UE5_4, usmap);
+        var function = asset.Exports.OfType<FunctionExport>()
+            .Single(f => f.ObjectName.ToString() == "GetBattleSpotIndexLeftToRight_(WhenFacingCharacters)");
+        int?[] gameTable = [1, 0, 2];
+        var allies = function.ScriptBytecode.OfType<EX_SetArray>()
+            .SingleOrDefault(a => a.Elements.Select(e => (e as EX_IntConst)?.Value).SequenceEqual(gameTable))
+            ?? throw new Exception("ally left-to-right table [1,0,2] not found");
+        allies.Elements = [..allies.Elements, new EX_IntConst { Value = 0 }, new EX_IntConst { Value = 1 }];
+
+        // the switch stores absolute offsets, which follow from the new sizes; jumps would need their targets tracked
+        var starts = new Dictionary<KismetExpression, uint>(ReferenceEqualityComparer.Instance);
+        uint offset = 0;
+        foreach (var statement in function.ScriptBytecode)
+            statement.Visit(asset, ref offset, (expression, at) => starts[expression] = at);
+        foreach (var expression in starts.Keys) {
+            switch (expression) {
+                case EX_Jump or EX_JumpIfNot or EX_PushExecutionFlow or EX_SkipOffsetConst or EX_Skip:
+                    throw new Exception($"{expression.Inst} in {function.ObjectName} stores an offset this patch does not move");
+                case EX_SwitchValue switchValue:
+                    for (var i = 0; i < switchValue.Cases.Length; i++) {
+                        var next = i + 1 < switchValue.Cases.Length ? switchValue.Cases[i + 1].CaseIndexValueTerm : switchValue.DefaultTerm;
+                        switchValue.Cases[i].NextOffset = starts[next];
+                    }
+                    switchValue.EndGotoOffset = starts[expression] + (uint)expression.GetSize(asset);
+                    break;
+            }
+        }
+        asset.Write(battleBase);
+        Console.WriteLine("Patched BP_jRPG_Character_Battle_Base");
+    }
+
     var retocProc = Process.Start("retoc.exe",
     [
         "to-zen", @".\Sandfall\Windows", "expedition33_coop_P.utoc",
